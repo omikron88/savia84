@@ -37,14 +37,14 @@ public class Savia84 extends javax.swing.JFrame {
         
         m = new Savia();
         
-        m.setDisp1(Disp2);
+        m.setDisp1(Disp1);
         m.setDisp2(Disp2);
         m.setDisp3(Disp3);
         m.setDisp4(Disp4);
         m.setDisp5(Disp5);
         m.setDisp6(Disp6);
-        m.setDisp6(Disp8);
-        m.setDisp6(Disp7);
+        m.setDisp7(Disp7);
+        m.setDisp8(Disp8);
 
         m.setLed1(Led1);
         m.setLed2(Led2);
@@ -64,7 +64,7 @@ public class Savia84 extends javax.swing.JFrame {
 
         m.start();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -148,6 +148,8 @@ public class Savia84 extends javax.swing.JFrame {
 
         dispPanel.setBackground(new java.awt.Color(0, 0, 0));
 
+        Disp1.setOffColor(new java.awt.Color(22, 22, 22));
+
         javax.swing.GroupLayout Disp1Layout = new javax.swing.GroupLayout(Disp1);
         Disp1.setLayout(Disp1Layout);
         Disp1Layout.setHorizontalGroup(
@@ -158,6 +160,8 @@ public class Savia84 extends javax.swing.JFrame {
             Disp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        Disp2.setOffColor(new java.awt.Color(22, 22, 22));
 
         javax.swing.GroupLayout Disp2Layout = new javax.swing.GroupLayout(Disp2);
         Disp2.setLayout(Disp2Layout);
@@ -170,6 +174,8 @@ public class Savia84 extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        Disp3.setOffColor(new java.awt.Color(22, 22, 22));
+
         javax.swing.GroupLayout Disp3Layout = new javax.swing.GroupLayout(Disp3);
         Disp3.setLayout(Disp3Layout);
         Disp3Layout.setHorizontalGroup(
@@ -180,6 +186,8 @@ public class Savia84 extends javax.swing.JFrame {
             Disp3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        Disp4.setOffColor(new java.awt.Color(22, 22, 22));
 
         javax.swing.GroupLayout Disp4Layout = new javax.swing.GroupLayout(Disp4);
         Disp4.setLayout(Disp4Layout);
@@ -192,6 +200,8 @@ public class Savia84 extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        Disp5.setOffColor(new java.awt.Color(22, 22, 22));
+
         javax.swing.GroupLayout Disp5Layout = new javax.swing.GroupLayout(Disp5);
         Disp5.setLayout(Disp5Layout);
         Disp5Layout.setHorizontalGroup(
@@ -202,6 +212,8 @@ public class Savia84 extends javax.swing.JFrame {
             Disp5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        Disp6.setOffColor(new java.awt.Color(22, 22, 22));
 
         javax.swing.GroupLayout Disp6Layout = new javax.swing.GroupLayout(Disp6);
         Disp6.setLayout(Disp6Layout);
@@ -214,6 +226,8 @@ public class Savia84 extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        Disp7.setOffColor(new java.awt.Color(22, 22, 22));
+
         javax.swing.GroupLayout Disp7Layout = new javax.swing.GroupLayout(Disp7);
         Disp7.setLayout(Disp7Layout);
         Disp7Layout.setHorizontalGroup(
@@ -224,6 +238,8 @@ public class Savia84 extends javax.swing.JFrame {
             Disp7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        Disp8.setOffColor(new java.awt.Color(22, 22, 22));
 
         javax.swing.GroupLayout Disp8Layout = new javax.swing.GroupLayout(Disp8);
         Disp8.setLayout(Disp8Layout);
@@ -660,6 +676,7 @@ public class Savia84 extends javax.swing.JFrame {
 
         dispPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
+        DispA1.setOffColor(new java.awt.Color(22, 22, 22));
         DispA1.setOnColor(java.awt.Color.orange);
 
         javax.swing.GroupLayout DispA1Layout = new javax.swing.GroupLayout(DispA1);
@@ -673,6 +690,7 @@ public class Savia84 extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        DispA2.setOffColor(new java.awt.Color(22, 22, 22));
         DispA2.setOnColor(java.awt.Color.orange);
 
         javax.swing.GroupLayout DispA2Layout = new javax.swing.GroupLayout(DispA2);
@@ -686,6 +704,7 @@ public class Savia84 extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        DispA3.setOffColor(new java.awt.Color(22, 22, 22));
         DispA3.setOnColor(java.awt.Color.orange);
 
         javax.swing.GroupLayout DispA3Layout = new javax.swing.GroupLayout(DispA3);
@@ -699,6 +718,7 @@ public class Savia84 extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        DispA4.setOffColor(new java.awt.Color(22, 22, 22));
         DispA4.setOnColor(java.awt.Color.orange);
 
         javax.swing.GroupLayout DispA4Layout = new javax.swing.GroupLayout(DispA4);
@@ -712,6 +732,7 @@ public class Savia84 extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        DispD1.setOffColor(new java.awt.Color(22, 22, 22));
         DispD1.setOnColor(java.awt.Color.orange);
 
         javax.swing.GroupLayout DispD1Layout = new javax.swing.GroupLayout(DispD1);
@@ -725,6 +746,7 @@ public class Savia84 extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        DispD2.setOffColor(new java.awt.Color(22, 22, 22));
         DispD2.setOnColor(java.awt.Color.orange);
 
         javax.swing.GroupLayout DispD2Layout = new javax.swing.GroupLayout(DispD2);
@@ -944,10 +966,11 @@ public class Savia84 extends javax.swing.JFrame {
 
     private void ButtonAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAction
         int keycode = Integer.parseInt(evt.getActionCommand(), 16);
+        m.keyPressed(keycode);
     }//GEN-LAST:event_ButtonAction
 
     private void ButtonResActionPerformed(java.awt.event.ActionEvent evt) {
-        m.ResetPressed();
+        m.resetPressed();
     }
 
     private void mSaveRamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mSaveRamActionPerformed

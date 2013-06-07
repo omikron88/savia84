@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import utils.HexFile;
 import utils.HexMem;
 import z80core.MemIoOps;
@@ -22,7 +24,14 @@ import z80core.Z80;
  */
 public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
     
-    private final int T = 2500000 / 50;
+    private final int T = 2000000 / 50;
+    
+    private final byte bs0 = 0x01;
+    private final byte bs1 = 0x02;
+    private final byte bs2 = 0x04;
+    private final byte br0 = ~bs0;
+    private final byte br1 = ~bs1;
+    private final byte br2 = ~bs0;
     
     private Config cfg;
     public  Memory mem;
@@ -37,8 +46,9 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
     private SevenDisp dispA1,dispA2,dispA3,dispA4,dispD1,dispD2;
     private JLabel led1,led2,led3,led4,led5,led6,led7,led8;
     
-    private int keypress;
-
+    private int pa,pb,pc;
+    private boolean dispst;
+    private byte[] keyb = new byte[9];
     
     public Savia() {
         cfg = new Config();
@@ -67,8 +77,16 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         mem.Reset(dirty);
         clk.reset();
         cpu.reset();
-        keypress = 0;
 
+        keyb[0] = 0x0f;
+        keyb[1] = 0x0f;
+        keyb[2] = 0x0f;
+        keyb[3] = 0x0f;
+        keyb[4] = 0x0f;
+        keyb[5] = 0x0f;
+        keyb[6] = 0x0f;
+        keyb[7] = 0x0f;
+        keyb[8] = 0x0f;
     }
     
     public void startEmulation() {
@@ -213,15 +231,112 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         led8 = led;
     }
 
-    public void ResetPressed() {
+    public void resetPressed() {
         Reset(false);
     }
+    
+    public void keyPressed(int keycode) {
+        switch(keycode) {
+            case 0x00: {
+                keyb[0] &= br2; 
+                break;
+            }
+            case 0x01: {
+                keyb[8] &= br2;                 
+                break;
+            }
+            case 0x02: {
+               keyb[0] &= br1; 
+                break;
+            }
+            case 0x03: {
+                keyb[8] &= br1; 
+                break;
+            }
+            case 0x04: {
+                keyb[1] &= br2; 
+                break;
+            }
+            case 0x05: {
+                keyb[7] &= br2;
+                break;
+            }
+            case 0x06: {
+                keyb[1] &= br1;
+                break;
+            }
+            case 0x07: {
+                keyb[7] &= br1;
+                break;
+            }
+            case 0x08: {
+                keyb[2] &= br2;
+                break;
+            }
+            case 0x09: {
+                keyb[6] &= br2;
+                break;
+            }
+            case 0x0a: {
+                keyb[2] &= br1;
+                break;
+            }
+            case 0x0b: {
+                keyb[6] &= br1;
+                break;
+            }
+            case 0x0c: {
+                keyb[5] &= br2;
+                break;
+            }
+            case 0x0d: {
+                keyb[4] &= br2;
+                break;
+            }
+            case 0x0e: {
+                keyb[5] &= br1;
+                break;
+            }
+            case 0x0f: {
+                keyb[4] &= br1;
+                break;
+            }
+            case 0x10: {
+                keyb[4] &= br0; // BR
+                break;
+            }
+            case 0x20: {
+                keyb[1] &= br0; // S
+                break;
+            }
+            case 0x30: {
+                keyb[0] &= br0; // L
+                break;
+            }
+            case 0x40: {
+                keyb[3] &= br2; // EX
+                break;
+            }
+            case 0x21: {
+                keyb[3] &= br1; // R
+                break;
+            }
+            case 0x31: {
+                keyb[5] &= br0; // AD
+                break;
+            }
+            case 0x41: {
+                keyb[8] &= br0; // DA
+                break;
+            }
+        } // switch
+    } 
 
     public void saveRam(String name) {
         try {
             HexFile hx = new HexFile(this);
             hx.hexOpen(name);
-            hx.hexWrite(0x0600, 0x09ff, 0);
+            hx.hexWrite(0x18000, 0x1fff, 0);
             hx.hexClose(0);
         } catch (IOException ex) {
             Logger.getLogger(Savia.class.getName()).log(Level.SEVERE, null, ex);
@@ -249,9 +364,7 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
     public int peek8(int address) {
         clk.addTstates(3);
         int value = mem.readByte(address) & 0xff;
-//        if (address==0xffff) {
 //        System.out.println(String.format("Peek: %04X,%02X (%04X)", address,value,cpu.getRegPC()));            
-//        }
         return value;
     }
 
@@ -282,8 +395,15 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
     public int inPort(int port) {
         clk.addTstates(4);
         port &= 0xff;
-//        System.out.println(String.format("In: %02X (%04X)", port,cpu.getRegPC()));
-        return 0xff;
+        int value = 0xff;
+        if ((port & 0x04) == 0) {   // A2 = 0
+            if ((port & 0x03) == 2) {   // PC
+                value = (keyb[pc & 0x0f] << 4);
+                keyb[pc & 0x0f] = 0x0f;
+            } 
+        }
+        System.out.println(String.format("In: %02X (%04X)", port,cpu.getRegPC()));
+        return value;
     }
 
     @Override
@@ -292,6 +412,33 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         port &= 0xff;
         value &= 0xff;
 //        System.out.println(String.format("Out: %02X,%02X (%04X)", port,value,cpu.getRegPC()));
+        if ((port & 0x04) == 0) {   // A2 = 0
+            switch(port & 0x03) {   // 8255 ports
+                case 0: {   // PA
+                    pa = value;
+                    if (dispst) { disp(); }
+                    dispst = false;
+                    break;
+                }
+                case 1: {   // PB
+                    pb = value;
+                    led1.setEnabled((value & 0x80) != 0);
+                    led2.setEnabled((value & 0x40) != 0);
+                    led3.setEnabled((value & 0x20) != 0);
+                    led4.setEnabled((value & 0x10) != 0);
+                    led5.setEnabled((value & 0x08) != 0);
+                    led6.setEnabled((value & 0x04) != 0);
+                    led7.setEnabled((value & 0x02) != 0);
+                    led8.setEnabled((value & 0x01) != 0);
+                    break;
+                }
+                case 2: {   // PC
+                    pc = value;
+                    dispst = true;
+                    break;
+                }
+            } // switch
+        } // A2 = 0
     }
 
     @Override
@@ -303,12 +450,48 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
     public int atAddress(int address, int opcode) {
 //        System.out.println(String.format("bp: %04X,%02X", address,opcode));
 //        System.out.println(String.format("HL: %04X DE: %04X", cpu.getRegHL(),cpu.getRegDE()));
-        
         return opcode;
     }
 
     @Override
     public void execDone() {
     
+    }
+    
+    private void disp() {
+        switch(pc & 0x0f) {
+            case 0: {
+                disp1.setSegments(0x7f & ~pa);
+                break;
+            }
+            case 2: {
+                disp2.setSegments(0x7f & ~pa);
+                break;
+            }
+            case 3: {
+                disp3.setSegments(0x7f & ~pa);
+                break;
+            }
+            case 4: {
+                disp4.setSegments(0x7f & ~pa);
+                break;
+            }
+            case 5: {
+                disp5.setSegments(0x7f & ~pa);
+                break;
+            }
+            case 6: {
+                disp6.setSegments(0x7f & ~pa);
+                break;
+            }
+            case 7: {
+                disp7.setSegments(0x7f & ~pa);
+                break;
+            }
+            case 8: {
+                disp8.setSegments(0x7f & ~pa);
+                break;
+            }
+        } //swicth
     }
 }

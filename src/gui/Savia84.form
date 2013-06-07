@@ -138,6 +138,11 @@
       </Layout>
       <SubComponents>
         <Container class="gui.SevenDisp" name="Disp1">
+          <Properties>
+            <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="16" green="16" red="16" type="rgb"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -153,6 +158,11 @@
           </Layout>
         </Container>
         <Container class="gui.SevenDisp" name="Disp2">
+          <Properties>
+            <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="16" green="16" red="16" type="rgb"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -168,6 +178,11 @@
           </Layout>
         </Container>
         <Container class="gui.SevenDisp" name="Disp3">
+          <Properties>
+            <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="16" green="16" red="16" type="rgb"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -183,6 +198,11 @@
           </Layout>
         </Container>
         <Container class="gui.SevenDisp" name="Disp4">
+          <Properties>
+            <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="16" green="16" red="16" type="rgb"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -198,6 +218,11 @@
           </Layout>
         </Container>
         <Container class="gui.SevenDisp" name="Disp5">
+          <Properties>
+            <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="16" green="16" red="16" type="rgb"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -213,6 +238,11 @@
           </Layout>
         </Container>
         <Container class="gui.SevenDisp" name="Disp6">
+          <Properties>
+            <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="16" green="16" red="16" type="rgb"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -228,6 +258,11 @@
           </Layout>
         </Container>
         <Container class="gui.SevenDisp" name="Disp7">
+          <Properties>
+            <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="16" green="16" red="16" type="rgb"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -243,6 +278,11 @@
           </Layout>
         </Container>
         <Container class="gui.SevenDisp" name="Disp8">
+          <Properties>
+            <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="16" green="16" red="16" type="rgb"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -1165,6 +1205,9 @@
           <SubComponents>
             <Container class="gui.SevenDisp" name="DispA1">
               <Properties>
+                <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="16" green="16" red="16" type="rgb"/>
+                </Property>
                 <Property name="onColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="c8" id="orange" palette="1" red="ff" type="palette"/>
                 </Property>
@@ -1185,6 +1228,9 @@
             </Container>
             <Container class="gui.SevenDisp" name="DispA2">
               <Properties>
+                <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="16" green="16" red="16" type="rgb"/>
+                </Property>
                 <Property name="onColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="c8" id="orange" palette="1" red="ff" type="palette"/>
                 </Property>
@@ -1205,6 +1251,9 @@
             </Container>
             <Container class="gui.SevenDisp" name="DispA3">
               <Properties>
+                <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="16" green="16" red="16" type="rgb"/>
+                </Property>
                 <Property name="onColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="c8" id="orange" palette="1" red="ff" type="palette"/>
                 </Property>
@@ -1225,6 +1274,9 @@
             </Container>
             <Container class="gui.SevenDisp" name="DispA4">
               <Properties>
+                <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="16" green="16" red="16" type="rgb"/>
+                </Property>
                 <Property name="onColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="c8" id="orange" palette="1" red="ff" type="palette"/>
                 </Property>
@@ -1245,6 +1297,9 @@
             </Container>
             <Container class="gui.SevenDisp" name="DispD1">
               <Properties>
+                <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="16" green="16" red="16" type="rgb"/>
+                </Property>
                 <Property name="onColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="c8" id="orange" palette="1" red="ff" type="palette"/>
                 </Property>
@@ -1265,6 +1320,9 @@
             </Container>
             <Container class="gui.SevenDisp" name="DispD2">
               <Properties>
+                <Property name="offColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="16" green="16" red="16" type="rgb"/>
+                </Property>
                 <Property name="onColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="c8" id="orange" palette="1" red="ff" type="palette"/>
                 </Property>
