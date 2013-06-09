@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import utils.HexFile;
 import utils.HexMem;
 import z80core.MemIoOps;
@@ -31,7 +29,7 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
     private final byte bs2 = 0x04;
     private final byte br0 = ~bs0;
     private final byte br1 = ~bs1;
-    private final byte br2 = ~bs0;
+    private final byte br2 = ~bs2;
     
     private Config cfg;
     public  Memory mem;
@@ -49,6 +47,13 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
     private int pa,pb,pc;
     private boolean dispst;
     private byte[] keyb = new byte[9];
+    private enum ks {N, P1, P2, P3}
+    private ks keyst = ks.N;
+
+    private enum dm {NON, INS, CYC};
+    private enum dc {M1, MR, MW, IR, IW};
+    private dm dMode = dm.NON;
+    private boolean step = false;
     
     public Savia() {
         cfg = new Config();
@@ -78,6 +83,7 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         clk.reset();
         cpu.reset();
 
+        keyst = ks.N;   
         keyb[0] = 0x0f;
         keyb[1] = 0x0f;
         keyb[2] = 0x0f;
@@ -115,6 +121,26 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
 
             cpu.execute(clk.getTstates()+T);
             
+            switch(keyst) {
+                case P1: {
+                    keyst = ks.P2;
+                }
+                case P2: {
+                    keyst = ks.P3;
+                }
+                case P3: {
+                    keyst = ks.N;
+                    keyb[0] = 0x0f;
+                    keyb[1] = 0x0f;
+                    keyb[2] = 0x0f;
+                    keyb[3] = 0x0f;
+                    keyb[4] = 0x0f;
+                    keyb[5] = 0x0f;
+                    keyb[6] = 0x0f;
+                    keyb[7] = 0x0f;
+                    keyb[8] = 0x0f;
+                }                    
+            } // switch
         }  
     }
             
@@ -336,7 +362,7 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         try {
             HexFile hx = new HexFile(this);
             hx.hexOpen(name);
-            hx.hexWrite(0x18000, 0x1fff, 0);
+            hx.hexWrite(0x1800, 0x1fff, 0);
             hx.hexClose(0);
         } catch (IOException ex) {
             Logger.getLogger(Savia.class.getName()).log(Level.SEVERE, null, ex);
@@ -352,10 +378,33 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         }
         cpu.setRegPC(0);
     }
+    
+    public void setDebugMode(char mode) { 
+        switch((byte) mode) {
+            case 'O': {
+                dMode = dm.NON;
+                break;
+            }
+            case 'I': {
+                dMode = dm.INS;
+                break;
+            }
+            case 'C': {
+                dMode = dm.CYC;
+                break;
+            }
+        } // switch
+    }
+
+    public void stepPressed() {
+        step = true;
+    }
+
     @Override
     public int fetchOpcode(int address) {
         clk.addTstates(4);
         int opcode = mem.readByte(address) & 0xff;
+        if (dMode != dm.NON) { debug(address, opcode, dc.M1); }
 //        System.out.println(String.format("PC: %04X (%02X)", address,opcode));
         return opcode;
     }
@@ -365,6 +414,7 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         clk.addTstates(3);
         int value = mem.readByte(address) & 0xff;
 //        System.out.println(String.format("Peek: %04X,%02X (%04X)", address,value,cpu.getRegPC()));            
+        if (dMode == dm.CYC) { debug(address, value, dc.MR); }
         return value;
     }
 
@@ -373,22 +423,28 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
 //        System.out.println(String.format("Poke: %04X,%02X (%04X)", address,value,cpu.getRegPC()));
         clk.addTstates(3);
         mem.writeByte(address, (byte) value);
+        if (dMode == dm.CYC) { debug(address, value, dc.MW); }
     }
 
     @Override
     public int peek16(int address) {
         clk.addTstates(6);
         int lsb = mem.readByte(address) & 0xff;
+        if (dMode == dm.CYC) { debug(address, lsb, dc.MR); }
         address = (address+1) & 0xffff;
-        return ((mem.readByte(address) << 8) & 0xff00 | lsb);
+        int msb = mem.readByte(address) & 0xff;
+        if (dMode == dm.CYC) { debug(address, msb, dc.MR); }
+        return ((msb << 8) & 0xff00 | lsb);
     }
 
     @Override
     public void poke16(int address, int word) {
         clk.addTstates(6);
         mem.writeByte(address, (byte) word);
+        if (dMode == dm.CYC) { debug(address, (word & 0xff), dc.MW); }
         address = (address+1) & 0xffff;
         mem.writeByte(address, (byte) (word >>> 8));
+        if (dMode == dm.CYC) { debug(address, (word >>> 8), dc.MR); }
     }
 
     @Override
@@ -397,12 +453,13 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         port &= 0xff;
         int value = 0xff;
         if ((port & 0x04) == 0) {   // A2 = 0
-            if ((port & 0x03) == 2) {   // PC
+            if ( ((port & 0x03) == 2) && (pc<9) ) {   // PC
                 value = (keyb[pc & 0x0f] << 4);
                 keyb[pc & 0x0f] = 0x0f;
-            } 
-        }
-        System.out.println(String.format("In: %02X (%04X)", port,cpu.getRegPC()));
+            } // PC 
+        } // A2 = 0;
+//        System.out.println(String.format("In: %02X (%04X)", port,cpu.getRegPC()));
+        if (dMode == dm.CYC) { debug(port, value, dc.IR); }
         return value;
     }
 
@@ -412,6 +469,7 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
         port &= 0xff;
         value &= 0xff;
 //        System.out.println(String.format("Out: %02X,%02X (%04X)", port,value,cpu.getRegPC()));
+        if (dMode == dm.CYC) { debug(port, value, dc.IW); }
         if ((port & 0x04) == 0) {   // A2 = 0
             switch(port & 0x03) {   // 8255 ports
                 case 0: {   // PA
@@ -493,5 +551,64 @@ public class Savia extends Thread implements MemIoOps, NotifyOps, HexMem {
                 break;
             }
         } //swicth
+    }
+    
+    private void debug(int a, int d, dc c) {
+        dispA1.Disp((a >>> 12) & 0x0f);
+        dispA2.Disp((a >>>  8) & 0x0f);
+        dispA3.Disp((a >>>  4) & 0x0f);
+        dispA4.Disp( a         & 0x0f);
+        dispD1.Disp((a >>>  4) & 0x0f);
+        dispD2.Disp( a         & 0x0f);
+        
+        if (dMode == dm.CYC) {
+            switch(c) {
+                case M1: {
+                    dispA1.setDP(true);
+                    dispA2.setDP(false);
+                    dispA3.setDP(false);
+                    dispD1.setDP(true);
+                    dispD2.setDP(false);
+                    break;
+                }
+                case MR: {
+                    dispA1.setDP(false);
+                    dispA2.setDP(true);
+                    dispA3.setDP(false);
+                    dispD1.setDP(true);
+                    dispD2.setDP(false);                
+                    break;
+                }
+                case MW: {
+                    dispA1.setDP(false);
+                    dispA2.setDP(true);
+                    dispA3.setDP(false);
+                    dispD1.setDP(false);
+                    dispD2.setDP(true);
+                    break;
+                }
+                case IR: {
+                    dispA1.setDP(false);
+                    dispA2.setDP(false);
+                    dispA3.setDP(true);
+                    dispD1.setDP(true);
+                    dispD2.setDP(false);
+                    break;
+                }
+                case IW: {
+                    dispA1.setDP(false);
+                    dispA2.setDP(false);
+                    dispA3.setDP(true);
+                    dispD1.setDP(false);
+                    dispD2.setDP(true);
+                    break;
+                }
+            } // switch
+        }
+        
+        step = false;
+        while(!step) {
+            
+        }
     }
 }
